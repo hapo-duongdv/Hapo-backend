@@ -25,11 +25,11 @@ export class UserDTO {
     name : string;
 
     @ApiProperty({
-        type: Number,
+        type: String,
         description: ""
     })
-    @IsInt()
-    age : number;
+    @IsString()
+    age : string;
 
     @ApiProperty({
         type: String,
@@ -78,6 +78,12 @@ export class UserDTO {
 export class UserRO {
     id: string;
     username: string;
+    name: string;
+    age:string;
+    gender:string;
+    email: string;
+    phone: string;
+    position:string;
     created: Date;
     token? : string;
     roles :string

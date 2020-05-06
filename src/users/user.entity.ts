@@ -24,8 +24,8 @@ export class UserEntity {
     @Column('text')
     email: string;
 
-    @Column('numeric')
-    age: number;
+    @Column('text')
+    age: string;
 
     @Column('text')
     address: string;
@@ -54,8 +54,8 @@ export class UserEntity {
     }
 
     toResponseObject( showToken: boolean = true) {
-        const { id, created_at, username, token, roles } = this;
-        const responseObject: any = { id, created_at, username, roles };
+        const { id, created_at, name, username, token, roles, address, gender, position, email, phone } = this;
+        const responseObject: any = { id, created_at, name,  username, address,  roles, gender, position, email, phone };
         if(showToken){
             responseObject.token = token;
         }

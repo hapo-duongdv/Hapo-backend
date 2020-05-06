@@ -7,43 +7,33 @@ import { ValidationExceptionFilter } from 'src/filters/validation-exception.filt
 import { Roles } from 'src/decorators/roles.decorator';
 import { User } from './user.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('users')
 @Controller('users')
 export class UsersController {
     constructor(private usersService: UsersService) { }
 
     @Get()
-    @UseGuards(AuthGuard)
-    @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
+    // @UseGuards(AuthGuard)
     showAllUsers() {
         return this.usersService.showAll();
     }
 
     @Post('/create')
-    @UseGuards(AuthGuard)
-    @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
+    // @UseGuards(AuthGuard)
     @UseFilters(new ValidationExceptionFilter())
     createUser(@Body(new ValidationPipe()) data: UserDTO) {
         return this.usersService.create(data);
     }
 
     @Get(':id')
-    @UseGuards(AuthGuard)
-    @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
+    // @UseGuards(AuthGuard)
     readUser(@Param('id') id: string) {
         return this.usersService.read(id)
     }
 
 
     @Put(':id')
-    @UseGuards(AuthGuard)
-    @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
+    // @UseGuards(AuthGuard)
     updateUser(@Param('id') id: string, @Body() data: Partial<UserDTO>) {
         return this.usersService.update(id, data)
             .then((result) => {
@@ -59,9 +49,7 @@ export class UsersController {
     }
 
     @Delete(':id')
-    @UseGuards(AuthGuard)
-    @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
+    // @UseGuards(AuthGuard)
     deleteUser(@Param('id') id: string) {
         return this.usersService.delete(id)
             .then((result) => {
@@ -86,10 +74,5 @@ export class UsersController {
     @UsePipes(new ValidationPipe())
     register(@Body() data: UserDTO) {
         return this.usersService.register(data);
-    }
-
-    @Get('/me')
-    getInfo(@Param('id') id: string, data: UserRO){
-        return this.usersService.getInfor(data);
     }
 }

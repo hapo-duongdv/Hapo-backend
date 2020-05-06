@@ -38,7 +38,8 @@ export class UsersService {
     }
 
     async getInfor(data): Promise<UserRO> {
-        const { username, password } = data;
+        const { username } = data;
+        console.log(data);
         const user = await this.userRepository.findOne({where: { username }});
         return user.toResponseObject();
     }
