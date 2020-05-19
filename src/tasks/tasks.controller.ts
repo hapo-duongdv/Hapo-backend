@@ -6,9 +6,9 @@ import { TaskDTO } from './task.dto';
 import { User } from 'src/users/user.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { Project } from 'src/projects/project.decorator';
+import { UserDTO } from 'src/users/user.dto';
 
-@UseGuards(AuthGuard)
-@UseGuards(RolesGuard)
 @Controller('tasks')
 export class TasksController {
 
@@ -23,40 +23,45 @@ export class TasksController {
     }
 
     @Get()
-    @Roles('admin')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles("user", "admin")
     showAll() {
         return this.tasksServie.showAll();
     }
 
     @Post('/create')
-    @Roles('admin')
-    @UseFilters(new ValidationExceptionFilter())
-    @UsePipes(new ValidationPipe())
-    create(@User('id') user, @Body() data: TaskDTO) {
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles("admin","user")
+    @UseFilters(ValidationExceptionFilter)
+    @UsePipes(ValidationPipe)
+    create(@User('id') user ,@Body() data: TaskDTO) {
         this.logData({ user, data });
         return this.tasksServie.create(user, data);
     }
 
     @Get(':id')
-    @Roles('admin')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles("admin", "user")
     read(@Param('id') id: string) {
         return this.tasksServie.read(id)
     }
 
 
     @Put(':id')
-    @Roles('admin')
-    @UseFilters(new ValidationExceptionFilter())
-    @UsePipes(new ValidationPipe())
-    update(@Param('id') id: string, @User('id') user ,@Body() data: Partial<TaskDTO>) {
-        this.logData({ id, user, data });
-        return this.tasksServie.update(id, user, data);
+    @UseGuards(AuthGuard,RolesGuard )
+    @Roles("admin", "user")
+    @UseFilters(ValidationExceptionFilter)
+    @UsePipes(ValidationPipe)
+    update(@Param('id') id: string, @User('id') user , @Project('id') project ,@Body() data: Partial<TaskDTO>) {
+        this.logData({ id, user, project, data });
+        return this.tasksServie.update(id, user, project, data);
     }
 
     @Delete(':id')
-    @UseGuards(new AuthGuard())
-    delete(@Param('id') id: string, @User('id') user) {
-        this.logData({ id, user });
-        return this.tasksServie.delete(id, user);
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles("admin", "user")
+    delete(@Param('id') id: string, @User('id') user, @Project('id') project) {
+        this.logData({ id, user, project });
+        return this.tasksServie.delete(id, user, project);
     }
 }

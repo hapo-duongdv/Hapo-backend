@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, UpdateDateColumn, ManyToOne } from "typeorm";
+import { ProjectEntity } from "src/projects/project.entity";
 
 
 @Entity('customers')
@@ -7,26 +8,29 @@ export class CustomerEntity {
     id: string;
 
     @CreateDateColumn()
-    created: Date;
+    created_at: Date;
 
-    @Column('text')
+    @UpdateDateColumn()
+    updated_at: Date;
+
+    @Column({type :'text', nullable: true})
     name: string;
 
-    @Column('numeric')
-    age: number;
+    @Column({type :'text', nullable: true})
+    age: string;
 
-    @Column('text')
+    @Column({type :'text', nullable: true})
     gender: string;
 
-    @Column('text')
-    project_id: string;
-
-    @Column('text')
+    @Column({type :'text', nullable: true})
     email: string;
 
-    @Column('text')
+    @Column({type :'text', nullable: true})
     phone: string;
 
-    @Column('text')
+    @Column({type :'text', nullable: true})
     address: string;
+
+    @ManyToOne(type => ProjectEntity, project => project.customers)
+    projects : ProjectEntity; 
 }

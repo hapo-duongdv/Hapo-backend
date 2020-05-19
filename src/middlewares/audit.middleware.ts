@@ -1,12 +1,23 @@
-import { NestMiddleware, Injectable } from "@nestjs/common";
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class AuditMiddleware implements NestMiddleware {
-    use(req: Request, res: Response, next: Function) {
-        console.log('Logging DELETE request IP', req.ip);
-        console.log('Logging DELETE request PATH', req.path);
-        console.log('Logging DELETE request Headers', req.headers);
-        next();
+export class AuthMiddleware implements NestMiddleware<Request|any, Response> {
+  constructor(private readonly userService: UsersService) {}
+  async use(req: Request|any, res: Response, next: Function) {
+    
+    const token = req.header('authorization');
+    if(!token) {
+      next();
+      return;
     }
+    const user = await this.userService.getUserByToken(token);
+    if(!user) {
+      next();
+      return;
+    }
+    req.user = user;
+    next();
+  }
 }

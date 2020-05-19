@@ -1,59 +1,61 @@
-import { Controller, HttpException, HttpStatus, Param, Delete, Body, Put, UseFilters, ValidationPipe, Post, UseGuards, Get } from '@nestjs/common';
+import { Controller, HttpException, HttpStatus, Param, Delete, Body, Put, UseFilters, ValidationPipe, Post, UseGuards, Get, UsePipes } from '@nestjs/common';
 import { ValidationExceptionFilter } from 'src/filters/validation-exception.filter';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Data } from 'src/decorators/data.decorator';
 import { CustomersService } from './customers.service';
-import { CustomerDTO } from './customer.dto';
+import { CustomerDTO, CustomerRO } from './customer.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('customers')
 export class CustomersController {
     constructor(private customersService: CustomersService) { }
 
     @Get()
-    @UseGuards(new AuthGuard())
-    showAllUsers(@Data() task) {
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles("admin", "user")
+    showAllUsers() {
         return this.customersService.showAll();
     }
 
     @Post('/create')
-    @UseFilters(new ValidationExceptionFilter())
-    createUser(@Body(new ValidationPipe()) data: CustomerDTO) {
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles("admin")
+    @UseFilters(ValidationExceptionFilter)
+    @UsePipes(ValidationPipe)
+    createUser(@Body() data: CustomerDTO) {
         return this.customersService.create(data);
     }
 
     @Get(':id')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles("admin", "user")
     readUser(@Param('id') id: string) {
         return this.customersService.read(id)
     }
 
 
     @Put(':id')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles("admin")
+    @UseFilters(ValidationExceptionFilter)
+    @UsePipes(ValidationPipe)
     updateUser(@Param('id') id: string, @Body() data: Partial<CustomerDTO>) {
         return this.customersService.update(id, data)
-            .then((result) => {
-                if (result) {
-                    return result;
-                } else {
-                    throw new HttpException('Customer not found!', HttpStatus.NOT_FOUND);
-                }
-            })
-            .catch(() => {
-                throw new HttpException('Customer not found!', HttpStatus.NOT_FOUND);
-            });
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles("admin")
     deleteUser(@Param('id') id: string) {
         return this.customersService.delete(id)
-            .then((result) => {
-                if (result) {
-                    return result;
-                } else {
-                    throw new HttpException('Customer not found!', HttpStatus.NOT_FOUND);
-                }
-            })
-            .catch(() => {
-                throw new HttpException('Customer not found!', HttpStatus.NOT_FOUND);
-            });
+    }
+
+    @Post('/add/:id')
+    @UseGuards(AuthGuard, RolesGuard)
+    @UseFilters(ValidationExceptionFilter)
+    @UsePipes(ValidationPipe)
+    addCustomer( @Param('id') id: string ,@Body() data: CustomerRO ) {
+        return this.customersService.getCustomer(id, data)
     }
 }

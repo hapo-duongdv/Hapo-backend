@@ -1,12 +1,10 @@
 import { IsNotEmpty, IsString, IsInt } from "class-validator";
+import { ProjectRO } from "src/projects/project.dto";
 
 export class CustomerDTO {
 
     @IsString()
     name : string;
-
-    @IsNotEmpty()
-    project_id : string;
 
     @IsString()
     email : string;
@@ -17,10 +15,22 @@ export class CustomerDTO {
     @IsString()
     address : string;
 
-    @IsInt()
-    age : number;
+    @IsString()
+    age : string;
 
     @IsString()
     gender : string;
 
+}
+
+export class CustomerRO {
+    id: string;
+    updated_at: Date;
+    created_at: Date;
+    name: string;
+    age:string;
+    gender:string;
+    email: string;
+    phone: string;
+    projects: ProjectRO;
 }

@@ -4,7 +4,7 @@
     "port": 3306,
     "username": "root",
     "password": "08071998",
-    "database": "hapo",
+    "database": "hapoDatabase",
     "entities": ["./src/**/*.entity.js","./dist/**/*.entity.js"],
     "synchronize": true
 }

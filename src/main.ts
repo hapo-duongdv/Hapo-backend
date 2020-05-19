@@ -18,7 +18,6 @@ async function bootstrap() {
   app.useGlobalFilters(new ValidationExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
   // app.useGlobalGuards(new AuthGuard());
-  // app.useGlobalGuards(new RolesGuard(Reflector));
 
   await app.listen(port);
   Logger.log(`Server is running on http://localhost:${port}`,'Boostrap');

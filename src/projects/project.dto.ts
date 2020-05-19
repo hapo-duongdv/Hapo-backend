@@ -1,4 +1,6 @@
-import { IsNotEmpty, IsString, IsInt } from "class-validator";
+import { IsNotEmpty, IsString, IsInt, IsArray } from "class-validator";
+import { UserRO } from "src/users/user.dto";
+import { CustomerRO } from "src/customers/customer.dto";
 
 export class ProjectDTO {
 
@@ -6,23 +8,20 @@ export class ProjectDTO {
     name : string;
 
     @IsString()
-    member_id : string;
-
-    @IsString()
-    customer_id : string;
-
-    @IsString()
     description : string;
-
-    @IsString()
-    list_task : string;
 
     @IsString()
     status : string;
 
-    @IsNotEmpty()
-    created_at : string;
-
-    @IsNotEmpty()
-    updated_at : string;
+}
+export class ProjectRO {
+    id? : string;
+    updated_at: Date;
+    created_at : Date;
+    name: string;
+    description: string;
+    status: string;
+    members: UserRO[];
+    author: UserRO;
+    customers: CustomerRO[]
 }
